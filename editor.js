@@ -24,13 +24,13 @@ document.addEventListener("DOMContentLoaded", () => {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     ctx.fillStyle = "red";
-    ctx.fillRect(150, 150, 300, 200);
-    ctx.fillRect(0, 150, 150, 20);
+    ctx.fillRect(110, 0, 120, 320);
+    ctx.fillRect(380, 200, 120, 280);
 
     ctx.fillStyle = "blue";
-    ctx.fillRect(150, 0, 50, 150);
+    ctx.fillRect(500, 400, 140, 80);
 
-    ctx.fillRect(50, 200, 40, 40);
+    ctx.fillRect(30, 200, 40, 40);
   }
   setInterval(draw, 1000 / 30);
 });

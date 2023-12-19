@@ -1,15 +1,17 @@
+let levels = ["Easy 1", "Easy 2", "Easy 3", "Easy 4", "Easy 5", "Easy 6"];
+let levelsShorthand = ["e1", "e2", "e3", "e4", "e5", "e6"];
 let level = "e1";
 let finish = false;
 let oldState;
 let playerSize = 20;
 let speed = 5;
-let mouseX,
-  mouseY = 0;
+let mouseX = 0;
+let mouseY = 0;
 let clickX = 0;
 let clickY = 0;
 let playerX = 0;
 let playerY = 0;
-let state = -1;
+let state = 1;
 let arrowRight = new Image(); // Create new img element
 arrowRight.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='24' viewBox='0 -960 960 960' width='24'%3E%3Cpath fill='%23ffffff' d='m380-300 280-180-280-180v360ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z'/%3E%3C/svg%3E";
 let arrowLeft = new Image(); // Create new img element
@@ -22,7 +24,6 @@ let restartBtn = new Image();
 restartBtn.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='24' viewBox='0 -960 960 960' width='24'%3E%3Cpath fill='%23ffffff' d='M440-122q-121-15-200.5-105.5T160-440q0-66 26-126.5T260-672l57 57q-38 34-57.5 79T240-440q0 88 56 155.5T440-202v80Zm80 0v-80q87-16 143.5-83T720-440q0-100-70-170t-170-70h-3l44 44-56 56-140-140 140-140 56 56-44 44h3q134 0 227 93t93 227q0 121-79.5 211.5T520-122Z'/%3E%3C/svg%3E";
 let home = new Image();
 home.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='24' viewBox='0 -960 960 960' width='24'%3E%3Cpath fill='%23ffffff' d='M240-200h120v-240h240v240h120v-360L480-740 240-560v360Zm-80 80v-480l320-240 320 240v480H520v-240h-80v240H160Zm320-350Z'/%3E%3C/svg%3E";
-
 
 // state: 0 = main page, 1 = levels page, -1 = level
 var frameTime = 0,
@@ -45,7 +46,9 @@ document.addEventListener("DOMContentLoaded", () => {
     mouseY = e.clientY;
   });
   function draw() {
+    
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.beginPath();
     ctx.fillStyle = "#111111";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     stateHandler();
@@ -98,7 +101,7 @@ function timer(ctx) {
   ctx.fillText(time, 10, 30);
 }
 async function drawLevel(ctx) {
-  if (!curLevel) {
+  if (!curLevel || !(curLevel["levelName"] == level)) {
     await downloadLevel();
     restart = true;
   }
@@ -240,65 +243,73 @@ function loadMainPage(ctx) {
 
 function loadLevelsPage(ctx) {
   ctx.lineWidth = 5;
-  ctx.fillStyle = "#101010";
-  ctx.strokeStyle = "#7a7a7a";
-  ctx.rect(150, 100, 300, 100);
-  ctx.fill();
-  ctx.stroke();
-  ctx.font = "bold 50px Arial";
-  ctx.fillStyle = "white";
-  ctx.fillText("Easy 1", 220, 168);
-  if (150 < clickX && clickX < 450 && 100 < clickY && clickY < 200) {
-    state = -1;
-    level = "e1";
+  for(let i = 0; i < levels.length; i++) {
+    ctx.fillStyle = "#101010";
+    ctx.strokeStyle = "#7a7a7a";
+    ctx.rect(50 + (i%3)*195, 50 + Math.floor(i/3)*150, 150, 100);
+    ctx.fill();
+    ctx.stroke();
+    if (50 + (i%3)*195 < clickX && clickX < 200 + (i%3)*195 && 50 + Math.floor(i/3)*150 < clickY && clickY < 150 + Math.floor(i/3)*150) {
+      state = -1;
+      level = levelsShorthand[i];
+    };
+  }
+  for(let i = 0; i < levels.length; i++) {
+    ctx.font = "bold 40px Arial";
+    ctx.fillStyle = "white";
+    ctx.fillText(levels[i], 60 + (i%3)*195, 115 + Math.floor(i/3)*150);
   }
 }
 document.addEventListener("mousedown", (e) => {
   clickX = e.clientX;
   clickY = e.clientY;
-  if(580 < clickX && clickX < 640 && 0 < clickY && clickY < 60) {
+  if (580 < clickX && clickX < 640 && 0 < clickY && clickY < 60) {
     restart = true;
   }
-  if(580 < clickX && clickX < 640 && 60 < clickY && clickY < 120) {
-    state = 0;
-  }
-})
-document.addEventListener("touchstart", (e) => {
-  clickX = e.touches[0].clientX;
-  clickY = e.touches[0].clientY;
-  if(580 < clickX && clickX < 640 && 420 < clickY && clickY < 480) {
-    keyRight = true;
-  }
-  if(480 < clickX && clickX < 540 && 420 < clickY && clickY < 480) {
-    keyLeft = true;
-  }
-  if(530 < clickX && clickX < 590 && 370 < clickY && clickY < 430) {
-    keyUp = true;
-  }
-  if(530 < clickX && clickX < 590 && 420 < clickY && clickY < 480) {
-    keyDown = true;
-  }
-  if(580 < clickX && clickX < 640 && 0 < clickY && clickY < 60) {
-    restart = true;
-  }
-  if(580 < clickX && clickX < 640 && 60 < clickY && clickY < 120) {
+  if (580 < clickX && clickX < 640 && 60 < clickY && clickY < 120) {
     state = 0;
   }
 });
+document.addEventListener("touchstart", (e) => {
+  clickX = e.touches[0].clientX;
+  clickY = e.touches[0].clientY;
+  if (state == -1) {
+    if (580 < clickX && clickX < 640 && 420 < clickY && clickY < 480) {
+      keyRight = true;
+    }
+    if (480 < clickX && clickX < 540 && 420 < clickY && clickY < 480) {
+      keyLeft = true;
+    }
+    if (530 < clickX && clickX < 590 && 370 < clickY && clickY < 430) {
+      keyUp = true;
+    }
+    if (530 < clickX && clickX < 590 && 420 < clickY && clickY < 480) {
+      keyDown = true;
+    }
+    if (580 < clickX && clickX < 640 && 0 < clickY && clickY < 60) {
+      restart = true;
+    }
+    if (580 < clickX && clickX < 640 && 60 < clickY && clickY < 120) {
+      state = 0;
+    }
+  }
+});
 document.addEventListener("touchend", (e) => {
-  if(580 < clickX && clickX < 640 && 420 < clickY && clickY < 480) {
-    keyRight = false;
+  if (state == -1) {
+    if (580 < clickX && clickX < 640 && 420 < clickY && clickY < 480) {
+      keyRight = false;
+    }
+    if (480 < clickX && clickX < 540 && 420 < clickY && clickY < 480) {
+      keyLeft = false;
+    }
+    if (530 < clickX && clickX < 590 && 370 < clickY && clickY < 430) {
+      keyUp = false;
+    }
+    if (530 < clickX && clickX < 590 && 420 < clickY && clickY < 480) {
+      keyDown = false;
+    }
   }
-  if(480 < clickX && clickX < 540 && 420 < clickY && clickY < 480) {
-    keyLeft = false;
-  }
-  if(530 < clickX && clickX < 590 && 370 < clickY && clickY < 430) {
-    keyUp = false;
-  }
-  if(530 < clickX && clickX < 590 && 420 < clickY && clickY < 480) {
-    keyDown = false;
-  }
-})
+});
 
 function controls(ctx) {
   ctx.drawImage(arrowRight, 580, 420, 60, 60);

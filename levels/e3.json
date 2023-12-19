@@ -1,0 +1,16 @@
+{
+    "levelName": "e3",
+    "levelData": {
+        "rectangles": [
+            [150, 150, 300, 200],
+            [0, 150, 150, 20]
+        ],
+        "teleportPortal": [
+            ["this"],
+            ["is"],
+            ["bullshit"]
+        ],
+        "endFlag": [150, 0, 50, 150],
+        "startPos": [70,220]
+    }
+}
